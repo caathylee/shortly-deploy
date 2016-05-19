@@ -34,7 +34,7 @@ module.exports = function(grunt) {
     eslint: {
       target: [
         // Add list of files to lint here
-        'public/dist/*js', 'public/dist/*css'
+        'public/dist/uglify.js', 'public/dist/output.css'
       ]
     },
 
@@ -65,8 +65,11 @@ module.exports = function(grunt) {
 
     shell: {
       prodServer: {
+        command: 'git push live master'
       }
     },
+
+
   });
 
   grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -91,11 +94,13 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('build', [
+    'concat', 'uglify', 'cssmin'
   ]);
 
   grunt.registerTask('upload', function(n) {
     if (grunt.option('prod')) {
       // add your production server task here
+      grunt.task.run([ 'shell:prodServer' ]);
     } else {
       grunt.task.run([ 'server-dev' ]);
     }
@@ -103,6 +108,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('deploy', [
     // add your deploy tasks here
+    'build', 'upload'
   ]);
 
 
